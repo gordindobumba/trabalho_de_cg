@@ -7,8 +7,6 @@ class Tabuleiro:
     def __init__(self, quadrado1, quadrado2):
         self.quadrado1 = quadrado1
         self.quadrado2 = quadrado2
-        
-        matrix = np.zeros(8, 8) # pra quando for definir o que tem no tabuleiro
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -30,7 +28,7 @@ class Tabuleiro:
                 x_axis = (i * size * 2) - 0.7
                 y_axis = (j * size * 2) - 0.7
                 T = glm.translate(glm.vec3(x_axis, y_axis, 0))
-                M = R_Z * R_X * T
+                M = R_X * R_Z * T
                 glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
                 
                 if (i + j) % 2 == 0: self.quadrado1.render(shaderId)
