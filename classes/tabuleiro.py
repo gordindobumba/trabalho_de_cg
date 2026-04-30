@@ -7,6 +7,8 @@ class Tabuleiro:
     def __init__(self, quadrado1, quadrado2):
         self.quadrado1 = quadrado1
         self.quadrado2 = quadrado2
+        
+        tab_matriz = np.array((8, 8)) # pra quando for botar os elementos no tabuleiro
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
