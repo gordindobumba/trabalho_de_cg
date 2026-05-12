@@ -5,10 +5,12 @@ import ctypes
 class MainAxis:
     def __init__(self):
         self.vertices = [
-            [0, -1,  0,1,0],
-            [0,  1,  0,1,0],
-            [-1, 0,  1,0,0],
-            [ 1, 0,  1,0,0]
+            [0, -1, 0,  0,1,0],
+            [0,  1, 0,  0,1,0],
+            [-1, 0, 0,  1,0,0],
+            [ 1, 0, 0,  1,0,0],
+            [0, 0, -1,  0,0,1],
+            [0, 0,  1,  0,0,1]
         ]
         
         self.qtdVertices = len(self.vertices)
@@ -22,9 +24,9 @@ class MainAxis:
         glBindBuffer(GL_ARRAY_BUFFER, vboId)
         glBufferData(GL_ARRAY_BUFFER, self.vertices.nbytes, self.vertices, GL_STATIC_DRAW)
         glEnableVertexAttribArray(0) # posicao
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5*4, ctypes.c_void_p(0))
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*4, ctypes.c_void_p(0))
         glEnableVertexAttribArray(1) # cor
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5*4, ctypes.c_void_p(2*4))
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*4, ctypes.c_void_p(3*4))
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         
         glBindVertexArray(0)

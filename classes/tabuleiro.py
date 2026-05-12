@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 from pyglm import glm
-from classes.quadrado import *
+from classes.cubo import *
 import numpy as np
 
 class Tabuleiro:
@@ -24,13 +24,14 @@ class Tabuleiro:
         n = np.int32(0.8/size)
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
         R_X = glm.rotate(glm.radians(-60), glm.vec3(1.0, 0.0, 0.0))
+        R = R_X * R_Z
         
         for i in range(n):
             for j in range(n):
-                x_axis = (i * size * 2) - 0.7
-                y_axis = (j * size * 2) - 0.7
+                x_axis = (i * size * 2) - (0.8 - size)
+                y_axis = (j * size * 2) - (0.8 - size)
                 T = glm.translate(glm.vec3(x_axis, y_axis, 0))
-                M = R_X * R_Z * T
+                M = R * T
                 glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
                 
                 if (i + j) % 2 == 0: self.quadrado1.render(shaderId)

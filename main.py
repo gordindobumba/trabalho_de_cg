@@ -2,27 +2,25 @@ import glfw
 from OpenGL.GL import *
 import os
 import OpenGL.GL.shaders as gls
-from classes.quadrado import *
+from classes.cubo import *
 from classes.mainaxis import *
 from classes.tabuleiro import *
 from pyglm import glm
 
-quadrado1 = None
-quadrado2 = None
-mainAxis = None
+cubo1 = None
+cubo2 = None
 tabuleiro = None
 size = 0
 shaderId = 0
 ang = 45
 
 def init():
-    global quadrado1, quadrado2, mainAxis, tabuleiro, shaderId, size
+    global cubo1, cubo2,  tabuleiro, shaderId, size
 
     size = 0.1
-    quadrado1 = Quadrado(255/255, 209/255, 171/255, size)
-    quadrado2 = Quadrado(156/255, 104/255, 0, size)
-    tabuleiro = Tabuleiro(quadrado1, quadrado2)
-    mainAxis = MainAxis()
+    cubo1 = Cubo(255/255, 209/255, 171/255, size)
+    cubo2 = Cubo(156/255, 104/255, 0, size)
+    tabuleiro = Tabuleiro(cubo1, cubo2)
     
     glClearColor(0,0,0,1)
     glEnable(GL_DEPTH_TEST);
