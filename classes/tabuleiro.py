@@ -15,15 +15,17 @@ class Tabuleiro:
         viewMatrix_loc = glGetUniformLocation(shaderId, 'viewMatrix')
         projMatrix_loc = glGetUniformLocation(shaderId, 'projMatrix')
         
-        V = glm.translate(glm.vec3(0.0, 0.0, 0.0))
-        P = glm.ortho(-1.2, 1.2, -1.2, 1.2, -2, 2)
+        V = glm.lookAt(glm.vec3(0.0, 0.0, 1.0),
+                       glm.vec3(0.0, 0.0, 0.0),
+                       glm.vec3(0.0, 1.0, 0.0))
+        P = glm.ortho(-1.3, 1.3, -1.3, 1.3, -2, 2)
         
         glUniformMatrix4fv(viewMatrix_loc, 1, GL_FALSE, glm.value_ptr(V))
         glUniformMatrix4fv(projMatrix_loc, 1, GL_FALSE, glm.value_ptr(P))
         
         n = np.int32(0.8/size)
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
-        R_X = glm.rotate(glm.radians(-60), glm.vec3(1.0, 0.0, 0.0))
+        R_X = glm.rotate(glm.radians(-55), glm.vec3(1.0, 0.0, 0.0))
         R = R_X * R_Z
         
         for i in range(n):
@@ -36,5 +38,3 @@ class Tabuleiro:
                 
                 if (i + j) % 2 == 0: self.cubo1.render(shaderId)
                 else: self.cubo2.render(shaderId)
-        
-        
