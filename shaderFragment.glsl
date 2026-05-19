@@ -1,6 +1,9 @@
 #version 460
 
 // uniform vec3 lightPos;
+// uniform vec3 camPos;
+// uniform vec3 lightColor;
+// uniform int isShaded;
 
 in vec3 cor;
 in vec3 normal;
@@ -8,15 +11,26 @@ in vec3 pos;
 
 out vec4 fragColor;
 
-//float lightning(){
+//vec3 lightning(){
     // vec3 l = normalize(lightPos - pos);
     // vec3 n = normalize(normal);
     // float dif = max(0, dot(l, n));
-    // return dif;
+
+    // vec3 r = reflect(l, n);
+    // vec3 v = normalize(camPos - pos);
+    // float spec = pow(max(0, dot(r, v)), 64);
+
+    // vec3 amb = 0.1 * cor * lightColor;
+
+    // vec3 shading = amb + lightColor * cor * dif + lightColor * vec3(1, 1, 1) * spec;
+
+    // return shading
 //}
 
 void main(){
-    // float dif = lightning();
-    // fragColor = vec4(dif * color, 1.0);
+    // vec3 c
+    // if(isShaded == 1) c = lightning();
+    // else c = cor;
+    // fragColor = vec4(dif * c, 1.0);
     fragColor = vec4(cor, 1.0);
 }

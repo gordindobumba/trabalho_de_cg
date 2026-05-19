@@ -13,8 +13,9 @@ out vec3 normal;
 out vec3 cor;
 
 void main(){
-    pos = a_pos;
-    normal = a_normal;
+    pos = vec3(modelMatrix * vec4(a_pos, 1.0));
+    mat3 normalMatrix = mat3(inverse(transpose(modelMatrix)));
+    normal = normalMatrix * a_normal;
     cor = a_cor;
     gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(a_pos, 1);
 }

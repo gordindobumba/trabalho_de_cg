@@ -4,9 +4,9 @@ from classes.cubo import *
 import numpy as np
 
 class Tabuleiro:
-    def __init__(self, quadrado1, quadrado2):
-        self.quadrado1 = quadrado1
-        self.quadrado2 = quadrado2
+    def __init__(self, cubo1, cubo2):
+        self.cubo1 = cubo1
+        self.cubo2 = cubo2
         
         tab_matriz = np.array((8, 8)) # pra quando for botar os elementos no tabuleiro
     
@@ -34,7 +34,7 @@ class Tabuleiro:
                 M = R * T
                 glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
                 
-                if (i + j) % 2 == 0: self.quadrado1.render(shaderId)
-                else: self.quadrado2.render(shaderId)
+                if (i + j) % 2 == 0: self.cubo1.render(shaderId)
+                else: self.cubo2.render(shaderId)
         
         
