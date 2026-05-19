@@ -8,7 +8,15 @@ class Tabuleiro:
         self.cubo1 = cubo1
         self.cubo2 = cubo2
         
-        tab_matriz = np.array((8, 8)) # pra quando for botar os elementos no tabuleiro
+        self.rio = Cubo(0, 0, 235/255, 0.1)
+        
+        self.tab_matrix = np.zeros((8, 8))
+        self.tab_matrix[7][7] = 1
+        self.tab_matrix[7][6] = 1
+        self.tab_matrix[7][5] = 1
+        self.tab_matrix[6][7] = 1
+        self.tab_matrix[5][1] = 1
+        self.tab_matrix[5][2] = 1
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -18,7 +26,7 @@ class Tabuleiro:
         V = glm.lookAt(glm.vec3(0.0, 0.0, 1.0),
                        glm.vec3(0.0, 0.0, 0.0),
                        glm.vec3(0.0, 1.0, 0.0))
-        P = glm.ortho(-1.3, 1.3, -1.3, 1.3, -2, 2)
+        P = glm.ortho(-1.2, 1.2, -1.2, 1.2, -2, 2)
         
         glUniformMatrix4fv(viewMatrix_loc, 1, GL_FALSE, glm.value_ptr(V))
         glUniformMatrix4fv(projMatrix_loc, 1, GL_FALSE, glm.value_ptr(P))
@@ -32,9 +40,17 @@ class Tabuleiro:
             for j in range(n):
                 x_axis = (i * size * 2) - (0.8 - size)
                 y_axis = (j * size * 2) - (0.8 - size)
-                T = glm.translate(glm.vec3(x_axis, y_axis, 0))
-                M = R * T
+                if self.tab_matrix[i][j] == 1:
+                    S = glm.scale(glm.vec3(1, 1, 0.8))
+                    T = glm.translate(glm.vec3(x_axis, y_axis, -0.02))
+                    X = T * S
+                else: 
+                    T = glm.translate(glm.vec3(x_axis, y_axis, 0))
+                    X = T
+                M = R * X
                 glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
                 
-                if (i + j) % 2 == 0: self.cubo1.render(shaderId)
-                else: self.cubo2.render(shaderId)
+                if self.tab_matrix[i][j] == 1: self.rio.render(shaderId)
+                else:
+                    if (i + j) % 2 == 0: self.cubo1.render(shaderId)
+                    else: self.cubo2.render(shaderId)
