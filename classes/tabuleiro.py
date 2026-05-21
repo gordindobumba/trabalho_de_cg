@@ -33,7 +33,7 @@ class Tabuleiro:
         
         n = np.int32(0.8/size)
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
-        R_X = glm.rotate(glm.radians(-55), glm.vec3(1.0, 0.0, 0.0))
+        R_X = glm.rotate(glm.radians(-50), glm.vec3(1.0, 0.0, 0.0))
         R = R_X * R_Z
         
         for i in range(n):

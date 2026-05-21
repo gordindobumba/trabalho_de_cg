@@ -13,6 +13,7 @@ tabuleiro = None
 size = 0
 shaderId = 0
 ang = 45
+window_size = 800
 
 def init():
     global cubo1, cubo2,  tabuleiro, shaderId, size
@@ -55,10 +56,27 @@ def process_input(window):
     if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
         ang -= 1
 
+def window_resize(window, width, height):
+    if width < window_size:
+        y = (height - window_size)//2
+        glViewport(0, y, width, window_size)
+    elif height < window_size:
+        x = (width - window_size)//2
+        glViewport(x, 0, window_size, height)
+    else:
+        size = min(width, height)
+        x = (width - size)//2
+        y = (height - size)//2
+        glViewport(x, y, size, size)
+        
+
 def main():
     glfw.init()
-    window = glfw.create_window(1000, 1000, 'projeto', None, None)
+    width, height = 800, 800
+
+    window = glfw.create_window(width, height, 'projeto', None, None)
     glfw.make_context_current(window)
+    glfw.set_window_size_callback(window, window_resize)
     glfw.set_key_callback(window, keyboard)
     init()
     
