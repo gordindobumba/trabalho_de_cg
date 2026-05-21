@@ -16,9 +16,9 @@ out vec4 fragColor;
     // vec3 n = normalize(normal);
     // float dif = max(0, dot(l, n));
 
-    // vec3 r = reflect(l, n);
     // vec3 v = normalize(camPos - pos);
-    // float spec = pow(max(0, dot(r, v)), 64);
+    // vec3 h = normalize(l + v);
+    // float spec = pow(max(0, dot(h, n)), 64);
 
     // vec3 amb = 0.1 * cor * lightColor;
 
