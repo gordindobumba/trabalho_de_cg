@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from pyglm import glm
 from classes.cubo import *
+from classes.modelo_obj import *
 import numpy as np
 
 class Tabuleiro:
@@ -17,6 +18,19 @@ class Tabuleiro:
         self.tab_matrix[6][7] = 1
         self.tab_matrix[5][1] = 1
         self.tab_matrix[5][2] = 1
+
+        self.personagens = []
+
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 2,
+            "coluna": 1
+        })
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 5,
+            "coluna": 6
+        })
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -54,3 +68,17 @@ class Tabuleiro:
                 else:
                     if (i + j) % 2 == 0: self.cubo1.render(shaderId)
                     else: self.cubo2.render(shaderId)
+
+        # colocar personagens 
+        for personagem in self.personagens:
+            linha = personagem["linha"]
+            coluna = personagem["coluna"]
+
+            x = (linha * size * 2) - (0.8 - size)
+            y = (coluna * size * 2) - (0.8 - size)
+                
+            personagem["obj"].render(shaderId,
+                               glm.vec3(x, y, 0.08),
+                               R)
+            
+        
