@@ -31,6 +31,8 @@ class Tabuleiro:
             "linha": 5,
             "coluna": 6
         })
+
+        self.personagem_selecionado = 0
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -80,5 +82,34 @@ class Tabuleiro:
             personagem["obj"].render(shaderId,
                                glm.vec3(x, y, 0.08),
                                R)
+
+    # trocar de personagem - passa pro próximo da lista
+    def proximo_personagem(self):
+        self.personagem_selecionado += 1
+        if self.personagem_selecionado >= len(self.personagens):
+            self.personagem_selecionado = 0
+
+    # funções de movimentação no tabuleiro
+    def mover_cima(self):
+        personagem = self.personagens[self.personagem_selecionado]
+        if personagem["linha"] > 0:
+            personagem["linha"] -= 1
+
+    def mover_baixo(self):
+        personagem = self.personagens[self.personagem_selecionado]
+        if personagem["linha"] < 7:
+            personagem["linha"] += 1
+
+    def mover_esquerda(self):
+        personagem = self.personagens[self.personagem_selecionado]
+        if personagem["coluna"] > 0:
+            personagem["coluna"] -= 1
+
+    def mover_direita(self):
+        personagem = self.personagens[self.personagem_selecionado]
+        if personagem["coluna"] < 7:
+            personagem["coluna"] += 1
+
+
             
         

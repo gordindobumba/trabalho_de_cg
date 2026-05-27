@@ -47,7 +47,22 @@ def render():
 
 def keyboard(window, key, scancode, action, mods):
     if action == glfw.PRESS:
+        # fechar jogo
         if key == glfw.KEY_ESCAPE: glfw.window_should_close(window)
+
+        # movimentação
+        elif key == glfw.KEY_W:
+            tabuleiro.mover_cima()
+        elif key == glfw.KEY_S:
+            tabuleiro.mover_baixo()
+        elif key == glfw.KEY_A:
+            tabuleiro.mover_esquerda()
+        elif key == glfw.KEY_D:
+            tabuleiro.mover_direita()
+
+        #trocar personagem
+        elif key == glfw.KEY_TAB:
+            tabuleiro.proximo_personagem()
 
 def process_input(window):
     global ang
