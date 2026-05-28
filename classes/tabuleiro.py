@@ -33,6 +33,8 @@ class Tabuleiro:
         })
 
         self.personagem_selecionado = 0
+
+        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -51,6 +53,11 @@ class Tabuleiro:
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
         R_X = glm.rotate(glm.radians(-50), glm.vec3(1.0, 0.0, 0.0))
         R = R_X * R_Z
+
+        # descobrir posição do personagem selecionado
+        personagem = self.personagens[self.personagem_selecionado]
+        linha_selecionada = personagem["linha"]
+        coluna_selecionada = personagem["coluna"]
         
         for i in range(n):
             for j in range(n):
@@ -66,10 +73,16 @@ class Tabuleiro:
                 M = R * X
                 glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
                 
-                if self.tab_matrix[i][j] == 1: self.rio.render(shaderId)
+                if self.tab_matrix[i][j] == 1: 
+                    self.rio.render(shaderId)
                 else:
-                    if (i + j) % 2 == 0: self.cubo1.render(shaderId)
-                    else: self.cubo2.render(shaderId)
+                    if(i == linha_selecionada and j == coluna_selecionada):
+                        self.cubo_selecionado.render(shaderId)
+                    else:
+                        if (i + j) % 2 == 0: 
+                            self.cubo1.render(shaderId)
+                        else: 
+                            self.cubo2.render(shaderId)
 
         # colocar personagens 
         for personagem in self.personagens:
