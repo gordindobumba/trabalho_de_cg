@@ -12,7 +12,6 @@ class Tabuleiro:
         self.size = 0.1
         
         self.rio = Cubo(0, 0, 235/255, self.size)
-        self.movimento = Movimento(self.size)
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -21,6 +20,8 @@ class Tabuleiro:
         self.tab_matrix[6][7] = 1
         self.tab_matrix[5][1] = 1
         self.tab_matrix[5][2] = 1
+        
+        self.movimento = Movimento(self.size, self.tab_matrix)
 
         self.personagens = []
 
@@ -38,9 +39,9 @@ class Tabuleiro:
         self.personagem_selecionado = 0
         self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
         
-        self.segundo_clique = False
+        self.modo_movimentar = False
         self.movimentos_validos = []
-        self.cubo_alcance = Cubo(1.0, 1.0, 0.0, 0.1)
+        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1)
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -82,8 +83,10 @@ class Tabuleiro:
                 if self.tab_matrix[i][j] == 1: 
                     self.rio.render(shaderId)
                 else:
-                    if(i == linha_selecionada and j == coluna_selecionada):
+                    if i == linha_selecionada and j == coluna_selecionada:
                         self.cubo_selecionado.render(shaderId)
+                    elif self.modo_movimentar and (i, j) in self.movimentos_validos:
+                        self.cubo_alcance.render(shaderId)
                     else:
                         if (i + j) % 2 == 0: 
                             self.cubo1.render(shaderId)
@@ -109,10 +112,32 @@ class Tabuleiro:
             self.personagem_selecionado = 0
 
 
-    def processar_clique(self, x_pos, y_pos, width, height, ang):
+    def mudar_posicao_personagem(self, x_pos, y_pos, width, height, ang):
         clicado_i, clicado_j = self.movimento.calcular_posicao(x_pos, y_pos, width, height, ang)
         
         if 0 <= clicado_i < 8 and 0 <= clicado_j < 8:
             personagem = self.personagens[self.personagem_selecionado]
-            personagem["linha"] = clicado_i
-            personagem["coluna"] = clicado_j
+            
+            if not self.modo_movimentar:
+                
+                # se clicou no mesmo personagem, mostra as casas válidas
+                if clicado_i == personagem["linha"] and clicado_j == personagem["coluna"]:
+                    self.modo_movimentar = True
+                    self.movimentos_validos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                
+                # se não clicou no mesmo personagem, checa se clicou no outro personagem
+                else:
+                    for id, p in enumerate(self.personagens):
+                        if p["linha"] == clicado_i and p["coluna"] == clicado_j:
+                            self.personagem_selecionado = id
+                            self.modo_movimentar = True
+                            self.movimentos_validos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                            break
+            else:
+                # verifica se a casa selecionada é válida
+                if (clicado_i, clicado_j) in self.movimentos_validos:
+                    personagem["linha"] = clicado_i
+                    personagem["coluna"] = clicado_j
+                
+                self.modo_movimentar = False
+                self.movimentos_validos = []

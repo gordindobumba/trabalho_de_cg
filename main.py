@@ -50,15 +50,11 @@ def keyboard(window, key, scancode, action, mods):
         # fechar jogo
         if key == glfw.KEY_ESCAPE: glfw.window_should_close(window)
 
-        #trocar personagem
-        elif key == glfw.KEY_TAB:
-            tabuleiro.proximo_personagem()
-
 def process_mouse(window, button, action, mods):
     if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS:
         width, height = glfw.get_window_size(window)
         x_pos, y_pos = glfw.get_cursor_pos(window)
-        tabuleiro.processar_clique(x_pos, y_pos, width, height, ang)
+        tabuleiro.mudar_posicao_personagem(x_pos, y_pos, width, height, ang)
 
 def process_input(window):
     global ang
@@ -85,7 +81,7 @@ def main():
     glfw.init()
     width, height = 800, 800
 
-    window = glfw.create_window(width, height, 'projeto', None, None)
+    window = glfw.create_window(width, height, 'trabalho de CG', None, None)
     glfw.make_context_current(window)
     glfw.set_window_size_callback(window, window_resize)
     glfw.set_key_callback(window, keyboard)
