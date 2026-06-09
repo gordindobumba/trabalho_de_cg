@@ -2,14 +2,17 @@ from OpenGL.GL import *
 from pyglm import glm
 from classes.cubo import *
 from classes.modelo_obj import *
+from classes.movimento import *
 import numpy as np
 
 class Tabuleiro:
     def __init__(self, cubo1, cubo2):
         self.cubo1 = cubo1
         self.cubo2 = cubo2
+        self.size = 0.1
         
-        self.rio = Cubo(0, 0, 235/255, 0.1)
+        self.rio = Cubo(0, 0, 235/255, self.size)
+        self.movimento = Movimento(self.size)
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -33,8 +36,11 @@ class Tabuleiro:
         })
 
         self.personagem_selecionado = 0
-
         self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
+        
+        self.segundo_clique = False
+        self.movimentos_validos = []
+        self.cubo_alcance = Cubo(1.0, 1.0, 0.0, 0.1)
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
@@ -51,7 +57,7 @@ class Tabuleiro:
         
         n = np.int32(0.8/size)
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
-        R_X = glm.rotate(glm.radians(-50), glm.vec3(1.0, 0.0, 0.0))
+        R_X = glm.rotate(glm.radians(-45), glm.vec3(1.0, 0.0, 0.0))
         R = R_X * R_Z
 
         # descobrir posição do personagem selecionado
@@ -102,27 +108,11 @@ class Tabuleiro:
         if self.personagem_selecionado >= len(self.personagens):
             self.personagem_selecionado = 0
 
-    # funções de movimentação no tabuleiro
-    def mover_cima(self):
-        personagem = self.personagens[self.personagem_selecionado]
-        if personagem["linha"] > 0:
-            personagem["linha"] -= 1
 
-    def mover_baixo(self):
-        personagem = self.personagens[self.personagem_selecionado]
-        if personagem["linha"] < 7:
-            personagem["linha"] += 1
-
-    def mover_esquerda(self):
-        personagem = self.personagens[self.personagem_selecionado]
-        if personagem["coluna"] > 0:
-            personagem["coluna"] -= 1
-
-    def mover_direita(self):
-        personagem = self.personagens[self.personagem_selecionado]
-        if personagem["coluna"] < 7:
-            personagem["coluna"] += 1
-
-
-            
+    def processar_clique(self, x_pos, y_pos, width, height, ang):
+        clicado_i, clicado_j = self.movimento.calcular_posicao(x_pos, y_pos, width, height, ang)
         
+        if 0 <= clicado_i < 8 and 0 <= clicado_j < 8:
+            personagem = self.personagens[self.personagem_selecionado]
+            personagem["linha"] = clicado_i
+            personagem["coluna"] = clicado_j

@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 import numpy as np
 from pyglm import glm
+import os
 import ctypes
 
 class ModeloOBJ:
@@ -59,13 +60,13 @@ class ModeloOBJ:
         normais_temp = []
 
         # abrir arquivo e ler por linha
-        with open(caminho, 'r') as arquivo:
+        here = os.path.dirname(os.path.abspath(caminho))
+        with open(os.path.join(here, 'retangulo.obj'), 'r') as arquivo:
             for linha in arquivo:
                 valores = linha.split()
 
                 # ignorar linhas vazias
-                if not valores:
-                    continue
+                if not valores: continue
 
                 # se forem vértices, lê e salva
                 if valores[0] == 'v':
@@ -102,13 +103,9 @@ class ModeloOBJ:
     def render(self, shader, posicao, R):
         # mover objeto no mundo
         model = glm.mat4(1.0)
-        model = glm.translate(model, 
-                              posicao)
-        model = glm.rotate(model, 
-                           glm.radians(90.0), 
-                           glm.vec3(1, 0 ,0))
-        model = glm.scale(model,
-                          glm.vec3(0.03))
+        model = glm.translate(model, posicao)
+        model = glm.rotate(model, glm.radians(90.0), glm.vec3(1, 0 ,0))
+        model = glm.scale(model, glm.vec3(0.03))
         model = R * model
 
         # pegar localização dos uniforms
@@ -135,9 +132,7 @@ class ModeloOBJ:
         glBindVertexArray(self.vao)
 
         # desenhar triângulos
-        glDrawArrays(GL_TRIANGLES, 
-                     0, 
-                     len(self.vertices)//9)
+        glDrawArrays(GL_TRIANGLES, 0, len(self.vertices)//9)
         
         # desativar vao
         glBindVertexArray(0)

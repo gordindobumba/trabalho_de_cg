@@ -50,19 +50,15 @@ def keyboard(window, key, scancode, action, mods):
         # fechar jogo
         if key == glfw.KEY_ESCAPE: glfw.window_should_close(window)
 
-        # movimentação
-        elif key == glfw.KEY_W:
-            tabuleiro.mover_cima()
-        elif key == glfw.KEY_S:
-            tabuleiro.mover_baixo()
-        elif key == glfw.KEY_A:
-            tabuleiro.mover_esquerda()
-        elif key == glfw.KEY_D:
-            tabuleiro.mover_direita()
-
         #trocar personagem
         elif key == glfw.KEY_TAB:
             tabuleiro.proximo_personagem()
+
+def process_mouse(window, button, action, mods):
+    if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS:
+        width, height = glfw.get_window_size(window)
+        x_pos, y_pos = glfw.get_cursor_pos(window)
+        tabuleiro.processar_clique(x_pos, y_pos, width, height, ang)
 
 def process_input(window):
     global ang
@@ -93,6 +89,7 @@ def main():
     glfw.make_context_current(window)
     glfw.set_window_size_callback(window, window_resize)
     glfw.set_key_callback(window, keyboard)
+    glfw.set_mouse_button_callback(window, process_mouse)
     init()
     
     intervalo_input = 1.0/60.0
