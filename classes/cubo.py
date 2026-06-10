@@ -43,6 +43,9 @@ class Cubo:
             [ size,  size, -size, 0, 0, -1, r, g, b]  # GCE
         ]
         
+        self.r = r
+        self.g = g
+        self.b = b
         self.vertices = vertices
         self.qtdVertices = len(self.vertices)
         
@@ -54,18 +57,44 @@ class Cubo:
         vboId = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, vboId)
         glBufferData(GL_ARRAY_BUFFER, self.vertices.nbytes, self.vertices, GL_STATIC_DRAW)
-        glEnableVertexAttribArray(0) # posicao
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*4, ctypes.c_void_p(0))
-        glEnableVertexAttribArray(1) # cor
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*4, ctypes.c_void_p(6*4))
-        glEnableVertexAttribArray(2) # normal
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*4, ctypes.c_void_p(3*4))
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-        
+        # posição
+        glEnableVertexAttribArray(0)
+        glVertexAttribPointer(
+            0,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            9*4,
+            ctypes.c_void_p(0)
+        )
+
+        # normal
+        glEnableVertexAttribArray(1)
+        glVertexAttribPointer(
+            1,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            9*4,
+            ctypes.c_void_p(3*4)
+        )
+
+        # cor
+        glEnableVertexAttribArray(2)
+        glVertexAttribPointer(
+            2,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            9*4,
+            ctypes.c_void_p(6*4)
+        )
+                
         glBindVertexArray(0)
     
     def render(self, shaderId):
         glBindVertexArray(self.vaoId)
-        
+        colorLoc = glGetUniformLocation(shaderId, "objectColor")
+        glUniform3f(colorLoc, self.r, self.g, self.b)
         glDrawArrays(GL_TRIANGLES, 0, self.qtdVertices)
         glBindVertexArray(0)

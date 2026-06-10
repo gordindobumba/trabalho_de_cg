@@ -29,27 +29,18 @@ class ModeloOBJ:
                               3, 
                               GL_FLOAT, 
                               GL_FALSE, 
-                              9*4, 
+                              6*4, 
                               ctypes.c_void_p(0))
         glEnableVertexAttribArray(0)
 
-        # configurar e habilitar atributo de cor
+        # configurar e habilitar atributo de normal
         glVertexAttribPointer(1, 
                               3, 
                               GL_FLOAT, 
                               GL_FALSE, 
-                              9*4, 
+                              6*4, 
                               ctypes.c_void_p(3*4))
         glEnableVertexAttribArray(1)
-
-        # configurar e habilitar atributo de normal
-        glVertexAttribPointer(2, 
-                              3, 
-                              GL_FLOAT, 
-                              GL_FALSE, 
-                              9*4, 
-                              ctypes.c_void_p(6*4))
-        glEnableVertexAttribArray(2)
 
         # desativar vao e vbo no final
         glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -93,14 +84,12 @@ class ModeloOBJ:
                         indice_normal = int(dados[2]) - 1
 
                         vertice = vertices_temp[indice_vertice]
-                        cor = [1.0, 0.0, 0.0]   # cor fixa
                         normal = normais_temp[indice_normal]
 
                         self.vertices.extend(vertice)
-                        self.vertices.extend(cor)
                         self.vertices.extend(normal)
 
-    def render(self, shader, posicao, R):
+    def render(self, shader, posicao, R, cor):
         # mover objeto no mundo
         model = glm.mat4(1.0)
         model = glm.translate(model, posicao)
@@ -111,6 +100,7 @@ class ModeloOBJ:
         # pegar localização dos uniforms
         modelLoc = glGetUniformLocation(shader, "modelMatrix")
         normalLoc = glGetUniformLocation(shader, "normalMatrix")
+        colorLoc = glGetUniformLocation(shader, "objectColor")
 
         # calcular normal matrix
         normalMatrix = glm.transpose(glm.inverse(model))
@@ -127,12 +117,15 @@ class ModeloOBJ:
                            GL_FALSE,
                            glm.value_ptr(normalMatrix))
         
+        # enviar cor
+        glUniform3f(colorLoc, cor[0], cor[1], cor[2])
+        
         
         # ativar vao
         glBindVertexArray(self.vao)
 
         # desenhar triângulos
-        glDrawArrays(GL_TRIANGLES, 0, len(self.vertices)//9)
+        glDrawArrays(GL_TRIANGLES, 0, len(self.vertices)//6)
         
         # desativar vao
         glBindVertexArray(0)

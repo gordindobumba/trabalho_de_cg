@@ -2,6 +2,7 @@ from OpenGL.GL import *
 from pyglm import glm
 from classes.cubo import *
 from classes.modelo_obj import *
+import math
 
 class Movimento:
     def __init__(self, size, matriz):
@@ -63,8 +64,8 @@ class Movimento:
         click_y = p_intersecao.y
         
         # arredonda para que seja emparelhado com uma casa do tabuleiro.
-        posicao_i = round(((click_x + (0.8 - self.size)) / (self.size * 2)))
-        posicao_j = round(((click_y + (0.8 - self.size)) / (self.size * 2)))
+        posicao_i = math.floor(((click_x + (0.8 - self.size)) / (self.size * 2)))
+        posicao_j = math.floor(((click_y + (0.8 - self.size)) / (self.size * 2)))
         
         return posicao_i, posicao_j
     

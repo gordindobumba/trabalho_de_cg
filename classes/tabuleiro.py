@@ -12,6 +12,8 @@ class Tabuleiro:
         self.size = 0.1
         
         self.rio = Cubo(0, 0, 235/255, self.size)
+        self.predio = Cubo(0.1, 0.1, 0.1, self.size)
+
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -20,6 +22,8 @@ class Tabuleiro:
         self.tab_matrix[6][7] = 1
         self.tab_matrix[5][1] = 1
         self.tab_matrix[5][2] = 1
+        self.tab_matrix[6][2] = 2
+        self.tab_matrix[2][3] = 2
         
         self.movimento = Movimento(self.size, self.tab_matrix)
 
@@ -27,17 +31,51 @@ class Tabuleiro:
 
         self.personagens.append({
             "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 1,
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0]
+        })
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
             "linha": 2,
-            "coluna": 1
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0]
+        })
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 3,
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0]
+        })
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 4,
+            "coluna": 6,
+            "tipo": "virus",
+            "cor": [1.0, 0.0, 1.0]
         })
         self.personagens.append({
             "obj": ModeloOBJ("modelos/retangulo.obj"),
             "linha": 5,
-            "coluna": 6
+            "coluna": 6,
+            "tipo": "virus",
+            "cor": [1.0, 0.0, 1.0]
+        })
+        self.personagens.append({
+            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "linha": 6,
+            "coluna": 6,
+            "tipo": "virus",
+            "cor": [1.0, 0.0, 1.0]
         })
 
         self.personagem_selecionado = 0
         self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
+
+        self.turno = "medico"
         
         self.modo_movimentar = False
         self.movimentos_validos = []
@@ -92,6 +130,17 @@ class Tabuleiro:
                             self.cubo1.render(shaderId)
                         else: 
                             self.cubo2.render(shaderId)
+                        if self.tab_matrix[i][j] == 2:
+                            S = glm.scale(glm.vec3(0.4, 0.4, 2.0))
+                            T = glm.translate(glm.vec3(x_axis, y_axis, 0.15))
+                            M = R * (T * S)
+                            glUniformMatrix4fv(
+                                modelMatrix_loc,
+                                1,
+                                GL_FALSE,
+                                glm.value_ptr(M)
+                            )
+                            self.predio.render(shaderId)
 
         # colocar personagens 
         for personagem in self.personagens:
@@ -103,7 +152,8 @@ class Tabuleiro:
                 
             personagem["obj"].render(shaderId,
                                glm.vec3(x, y, 0.08),
-                               R)
+                               R,
+                               personagem["cor"])
 
     # trocar de personagem - passa pro próximo da lista
     def proximo_personagem(self):
@@ -122,22 +172,60 @@ class Tabuleiro:
                 
                 # se clicou no mesmo personagem, mostra as casas válidas
                 if clicado_i == personagem["linha"] and clicado_j == personagem["coluna"]:
-                    self.modo_movimentar = True
-                    self.movimentos_validos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                    if personagem["tipo"] != self.turno:
+                        return
+                    self.modo_movimentar = True 
+                    movimentos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                    self.movimentos_validos = []
+                    for casa in movimentos:
+                        i, j = casa
+                        if not self.casa_ocupada(i, j, personagem):
+                            self.movimentos_validos.append(casa)
                 
                 # se não clicou no mesmo personagem, checa se clicou no outro personagem
-                else:
+                else:   
                     for id, p in enumerate(self.personagens):
                         if p["linha"] == clicado_i and p["coluna"] == clicado_j:
+                            if p["tipo"] != self.turno:
+                                return
                             self.personagem_selecionado = id
+                            personagem = p
                             self.modo_movimentar = True
-                            self.movimentos_validos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                            movimentos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                            self.movimentos_validos = []
+                            for casa in movimentos:
+                                i, j = casa
+                                if not self.casa_ocupada(i, j, personagem):
+                                    self.movimentos_validos.append(casa)
                             break
             else:
                 # verifica se a casa selecionada é válida
                 if (clicado_i, clicado_j) in self.movimentos_validos:
                     personagem["linha"] = clicado_i
                     personagem["coluna"] = clicado_j
-                
+                    self.passar_turno()
+
                 self.modo_movimentar = False
                 self.movimentos_validos = []
+
+    # verificar se a casa já é ocupada por outro personagem
+    def casa_ocupada(self, linha, coluna, ignorar=None):
+        for personagem in self.personagens:
+            if personagem is ignorar:
+                continue
+            if (personagem["linha"] == linha and personagem["coluna"] == coluna):
+                return True
+        return False
+    
+    # passar para o próximo turno
+    def passar_turno(self):
+        self.modo_movimentar = False
+        self.movimentos_validos = []    
+        if self.turno == "medico":
+            self.turno = "virus"
+        else:
+            self.turno = "medico"
+        for i, p in enumerate(self.personagens):
+            if p["tipo"] == self.turno:
+                self.personagem_selecionado = i
+                break

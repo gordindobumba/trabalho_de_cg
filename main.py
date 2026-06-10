@@ -24,7 +24,7 @@ def init():
     tabuleiro = Tabuleiro(cubo1, cubo2)
     
     glClearColor(0,0,0,1)
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST)
     glLineWidth(3)
     
     here = os.path.dirname(os.path.abspath(__file__))
