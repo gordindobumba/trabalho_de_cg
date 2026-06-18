@@ -98,28 +98,21 @@ class ModeloOBJ:
         model = R * model
 
         # pegar localização dos uniforms
-        modelLoc = glGetUniformLocation(shader, "modelMatrix")
-        normalLoc = glGetUniformLocation(shader, "normalMatrix")
-        colorLoc = glGetUniformLocation(shader, "objectColor")
+        shader.setUniformLocation('modelMatrix')
+        shader.setUniformLocation('normalMatrix')
+        shader.setUniformLocation('objectColor')
 
         # calcular normal matrix
         normalMatrix = glm.transpose(glm.inverse(model))
 
         # enviar model matrix
-        glUniformMatrix4fv(modelLoc, 
-                           1, 
-                           GL_FALSE, 
-                           glm.value_ptr(model))
+        shader.setUniformMatrix('modelMatrix', model)
 
         # enviar normal matrix
-        glUniformMatrix4fv(normalLoc,
-                           1,
-                           GL_FALSE,
-                           glm.value_ptr(normalMatrix))
+        shader.setUniformMatrix('normalMatrix', normalMatrix)
         
         # enviar cor
-        glUniform3f(colorLoc, cor[0], cor[1], cor[2])
-        
+        shader.setUniform('objectColor', cor[0], cor[1], cor[2])
         
         # ativar vao
         glBindVertexArray(self.vao)

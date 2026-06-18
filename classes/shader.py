@@ -24,8 +24,9 @@ class Shader:
         glUseProgram(0)
     
     def setUniformLocation(self, name):
-        loc = glGetUniformLocation(self.shaderId, name)
-        self.uniforms[name] = loc
+        if name not in self.uniforms:
+            loc = glGetUniformLocation(self.shaderId, name)
+            self.uniforms[name] = loc
     
     def setUniform(self, name, x, y, z):
         loc = self.getUniformLocation(name)

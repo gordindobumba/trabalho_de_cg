@@ -6,13 +6,13 @@ from classes.movimento import *
 import numpy as np
 
 class Tabuleiro:
-    def __init__(self, cubo1, cubo2, shader):
+    def __init__(self, cubo1, cubo2):
         self.cubo1 = cubo1
         self.cubo2 = cubo2
         self.size = 0.1
         
-        self.rio = Cubo(0, 0, 235/255, self.size, shader)
-        self.predio = Cubo(0.1, 0.1, 0.1, self.size, shader)
+        self.rio = Cubo(0, 0, 235/255, self.size)
+        self.predio = Cubo(0.1, 0.1, 0.1, self.size)
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -72,26 +72,26 @@ class Tabuleiro:
         })
 
         self.personagem_selecionado = 0
-        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1, shader)
+        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
 
         self.turno = "medico"
         
         self.modo_movimentar = False
         self.movimentos_validos = []
-        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1, shader)
+        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1)
     
-    def render(self, shaderId, size, ang):
-        modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')
-        viewMatrix_loc = glGetUniformLocation(shaderId, 'viewMatrix')
-        projMatrix_loc = glGetUniformLocation(shaderId, 'projMatrix')
+    def render(self, shader, size, ang):
+        shader.setUniformLocation('modelMatrix')
+        shader.setUniformLocation('viewMatrix')
+        shader.setUniformLocation('projMatrix')
         
         V = glm.lookAt(glm.vec3(0.0, 0.0, 1.0),
                        glm.vec3(0.0, 0.0, 0.0),
                        glm.vec3(0.0, 1.0, 0.0))
         P = glm.ortho(-1.2, 1.2, -1.2, 1.2, -2, 2)
         
-        glUniformMatrix4fv(viewMatrix_loc, 1, GL_FALSE, glm.value_ptr(V))
-        glUniformMatrix4fv(projMatrix_loc, 1, GL_FALSE, glm.value_ptr(P))
+        shader.setUniformMatrix('viewMatrix', V)
+        shader.setUniformMatrix('projMatrix', P)
         
         n = np.int32(0.8/size)
         R_Z = glm.rotate(glm.radians(ang), glm.vec3(0.0, 0.0, 1.0))
@@ -115,31 +115,26 @@ class Tabuleiro:
                     T = glm.translate(glm.vec3(x_axis, y_axis, 0))
                     X = T
                 M = R * X
-                glUniformMatrix4fv(modelMatrix_loc, 1, GL_FALSE, glm.value_ptr(M))
+                shader.setUniformMatrix('modelMatrix', M)
                 
                 if self.tab_matrix[i][j] == 1: 
-                    self.rio.render(shaderId)
+                    self.rio.render(shader)
                 else:
                     if i == linha_selecionada and j == coluna_selecionada:
-                        self.cubo_selecionado.render(shaderId)
+                        self.cubo_selecionado.render(shader)
                     elif self.modo_movimentar and (i, j) in self.movimentos_validos:
-                        self.cubo_alcance.render(shaderId)
+                        self.cubo_alcance.render(shader)
                     else:
                         if (i + j) % 2 == 0: 
-                            self.cubo1.render(shaderId)
+                            self.cubo1.render(shader)
                         else: 
-                            self.cubo2.render(shaderId)
+                            self.cubo2.render(shader)
                         if self.tab_matrix[i][j] == 2:
                             S = glm.scale(glm.vec3(0.4, 0.4, 2.0))
                             T = glm.translate(glm.vec3(x_axis, y_axis, 0.15))
                             M = R * (T * S)
-                            glUniformMatrix4fv(
-                                modelMatrix_loc,
-                                1,
-                                GL_FALSE,
-                                glm.value_ptr(M)
-                            )
-                            self.predio.render(shaderId)
+                            shader.setUniformMatrix('modelMatrix', M)
+                            self.predio.render(shader)
 
         # colocar personagens 
         for personagem in self.personagens:
@@ -149,7 +144,7 @@ class Tabuleiro:
             x = (linha * size * 2) - (0.8 - size)
             y = (coluna * size * 2) - (0.8 - size)
                 
-            personagem["obj"].render(shaderId,
+            personagem["obj"].render(shader,
                                glm.vec3(x, y, 0.08),
                                R,
                                personagem["cor"])

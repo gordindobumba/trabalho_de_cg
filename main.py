@@ -21,31 +21,21 @@ def init():
 
     size = 0.1
     shader = Shader()
-    cubo1 = Cubo(255/255, 209/255, 171/255, size, shader)
-    cubo2 = Cubo(156/255, 104/255, 0, size, shader)
-    tabuleiro = Tabuleiro(cubo1, cubo2, shader)
+    cubo1 = Cubo(255/255, 209/255, 171/255, size)
+    cubo2 = Cubo(156/255, 104/255, 0, size)
+    tabuleiro = Tabuleiro(cubo1, cubo2)
     
     glClearColor(0,0,0,1)
     glEnable(GL_DEPTH_TEST)
     glLineWidth(3)
-    
-    here = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(here, 'shaders', 'shaderVertex.glsl'), 'r') as file:
-        vsSource = file.read()
-    with open(os.path.join(here, 'shaders', 'shaderFragment.glsl'), 'r') as file:
-        fsSource = file.read()
-    
-    vsId = gls.compileShader(vsSource, GL_VERTEX_SHADER)
-    fsId = gls.compileShader(fsSource, GL_FRAGMENT_SHADER)
-    shaderId = gls.compileProgram(vsId, fsId)
 
 def render():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         shader.bind()
         
-        tabuleiro.render(shaderId, size, ang)
+        tabuleiro.render(shader, size, ang)
         
-        glUseProgram(0)
+        shader.unbind()
 
 def keyboard(window, key, scancode, action, mods):
     if action == glfw.PRESS:

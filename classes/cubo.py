@@ -4,7 +4,7 @@ import ctypes
 from classes.shader import *
 
 class Cubo:
-    def __init__(self, r, g, b, size=1, shader = None):
+    def __init__(self, r, g, b, size=1):
         vertices = [ # 6 faces = 12 triangulos = 36 vertices
             [-size, -size, -size, 0, -1, 0, r, g, b],
             [-size, -size,  size, 0, -1, 0, r, g, b],
@@ -48,7 +48,6 @@ class Cubo:
         self.g = g
         self.b = b
         self.vertices = vertices
-        self.shader = shader
         self.qtdVertices = len(self.vertices)
         
         self.vertices = np.array(self.vertices, np.float32)
@@ -94,8 +93,8 @@ class Cubo:
                 
         glBindVertexArray(0)
     
-    def render(self, shaderId):
+    def render(self, shader):
         glBindVertexArray(self.vaoId)
-        self.shader.setUniform('objectColor', self.r, self.g, self.b)
+        shader.setUniform('objectColor', self.r, self.g, self.b)
         glDrawArrays(GL_TRIANGLES, 0, self.qtdVertices)
         glBindVertexArray(0)
