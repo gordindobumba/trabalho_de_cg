@@ -64,8 +64,8 @@ class Movimento:
         click_y = p_intersecao.y
         
         # calcula a posição e pega o piso para que seja emparelhado com uma casa do tabuleiro.
-        posicao_i = math.floor(((click_x + (0.8 - self.size)) / (self.size * 2)))
-        posicao_j = math.floor(((click_y + (0.8 - self.size)) / (self.size * 2)))
+        posicao_i = math.floor((click_x + 0.8) / (self.size * 2))
+        posicao_j = math.floor((click_y + 0.8) / (self.size * 2))
         
         return posicao_i, posicao_j
     
