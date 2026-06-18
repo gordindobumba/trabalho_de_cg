@@ -5,10 +5,10 @@ import os
 import ctypes
 
 class ModeloOBJ:
-    def __init__(self, caminho):
+    def __init__(self):
         # carregar obj
         self.vertices = []
-        self.carregar_obj(caminho)
+        self.carregar_obj()
         self.vertices = np.array(self.vertices, dtype=np.float32)
 
         # criar e ativar vao e vbo
@@ -46,13 +46,13 @@ class ModeloOBJ:
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glBindVertexArray(0)
 
-    def carregar_obj(self, caminho):
+    def carregar_obj(self):
         vertices_temp = []
         normais_temp = []
 
         # abrir arquivo e ler por linha
-        here = os.path.dirname(os.path.abspath(caminho))
-        with open(os.path.join(here, 'retangulo.obj'), 'r') as arquivo:
+        path = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(path, '..', 'modelos', 'retangulo.obj'), 'r') as arquivo:
             for linha in arquivo:
                 valores = linha.split()
 

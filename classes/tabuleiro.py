@@ -6,14 +6,13 @@ from classes.movimento import *
 import numpy as np
 
 class Tabuleiro:
-    def __init__(self, cubo1, cubo2):
+    def __init__(self, cubo1, cubo2, shader):
         self.cubo1 = cubo1
         self.cubo2 = cubo2
         self.size = 0.1
         
-        self.rio = Cubo(0, 0, 235/255, self.size)
-        self.predio = Cubo(0.1, 0.1, 0.1, self.size)
-
+        self.rio = Cubo(0, 0, 235/255, self.size, shader)
+        self.predio = Cubo(0.1, 0.1, 0.1, self.size, shader)
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -30,42 +29,42 @@ class Tabuleiro:
         self.personagens = []
 
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 1,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 2,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 3,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 4,
             "coluna": 6,
             "tipo": "virus",
             "cor": [1.0, 0.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 5,
             "coluna": 6,
             "tipo": "virus",
             "cor": [1.0, 0.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ("modelos/retangulo.obj"),
+            "obj": ModeloOBJ(),
             "linha": 6,
             "coluna": 6,
             "tipo": "virus",
@@ -73,13 +72,13 @@ class Tabuleiro:
         })
 
         self.personagem_selecionado = 0
-        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
+        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1, shader)
 
         self.turno = "medico"
         
         self.modo_movimentar = False
         self.movimentos_validos = []
-        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1)
+        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1, shader)
     
     def render(self, shaderId, size, ang):
         modelMatrix_loc = glGetUniformLocation(shaderId, 'modelMatrix')

@@ -8,7 +8,7 @@ class Movimento:
     def __init__(self, size, matriz):
         self.size = size
         self.tab_matriz = matriz
-
+        
     
     # iremos calcular a posição de clique usando um tipo de ray casting.
     # no ray casting, se simulam raios saindo da câmera e indo pra cena.
@@ -36,7 +36,7 @@ class Movimento:
         # logo, iremos "desfazer" as transformações geométricas pra descobrir a posição.
         M_inv = glm.inverse(P * V * R)
         
-        # esses pontos simulam o tamanho da cena
+        # esses pontos simulam o tamanho da cena.
         ponto_near = glm.vec4(ndc_x, ndc_y, -1.0, 1.0)
         ponto_far =  glm.vec4(ndc_x, ndc_y,  1.0, 1.0)
         
@@ -54,7 +54,7 @@ class Movimento:
         direcao = glm.vec3(mundo_near - mundo_far)
         if abs(direcao.z) < 1e-6: return -1, -1 # se o vetor for paralelo ao plano (z ~= 0), não continuar.
         
-        # equação para calcular o ponto de interseção entre a reta e o plano.
+        # equação de reta paramétrica para calcular o ponto de interseção entre a reta e o plano.
         # a variável t é o valor que modifica o módulo do vetor direção, para que, ao ser somado com mundo_near,
         # gere o ponto de interseção entre o vetor e o tabuleiro.
         t = (-1)*mundo_near.z / direcao.z
@@ -63,7 +63,7 @@ class Movimento:
         click_x = p_intersecao.x
         click_y = p_intersecao.y
         
-        # arredonda para que seja emparelhado com uma casa do tabuleiro.
+        # calcula a posição e pega o piso para que seja emparelhado com uma casa do tabuleiro.
         posicao_i = math.floor(((click_x + (0.8 - self.size)) / (self.size * 2)))
         posicao_j = math.floor(((click_y + (0.8 - self.size)) / (self.size * 2)))
         
