@@ -1,11 +1,8 @@
 import glfw
 from OpenGL.GL import *
-import os
-import OpenGL.GL.shaders as gls
 from classes.cubo import *
 from classes.tabuleiro import *
 from classes.shader import *
-from pyglm import glm
 
 cubo1 = None
 cubo2 = None

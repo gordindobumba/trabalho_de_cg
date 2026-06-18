@@ -7,7 +7,7 @@ import math
 class Movimento:
     def __init__(self, size, matriz):
         self.size = size
-        self.tab_matriz = matriz
+        self.tab_matrix = matriz
         
     
     # iremos calcular a posição de clique usando um tipo de ray casting.
@@ -57,18 +57,26 @@ class Movimento:
         # equação de reta paramétrica para calcular o ponto de interseção entre a reta e o plano.
         # a variável t é o valor que modifica o módulo do vetor direção, para que, ao ser somado com mundo_near,
         # gere o ponto de interseção entre o vetor e o tabuleiro.
-        t = (-1)*mundo_near.z / direcao.z
+        t = (self.size - mundo_near.z)/ direcao.z
         p_intersecao = glm.vec3(mundo_near) + t * direcao
         
         click_x = p_intersecao.x
         click_y = p_intersecao.y
+        tamanho_casa = self.size * 2
         
         # calcula a posição e pega o piso para que seja emparelhado com uma casa do tabuleiro.
-        posicao_i = math.floor((click_x + 0.8) / (self.size * 2))
-        posicao_j = math.floor((click_y + 0.8) / (self.size * 2))
+        posicao_i = math.floor((click_x + 0.8 - self.size) / tamanho_casa + 0.5)
+        posicao_j = math.floor((click_y + 0.8 - self.size) / tamanho_casa + 0.5)
         
         return posicao_i, posicao_j
     
+    def colisao(self, i, j, l, c):
+        if self.tab_matrix[i][j] != 0:
+            if i == l + 1 and j == c: return False
+            elif i == l - 1 and j == c: return False
+            elif i == l and j == c + 1: return False
+            elif i == l and j == c - 1: return False
+        return True
     
     # usaremos distância de manhattan para calcular as distâncias possívels a partir da casa selecionada.
     # distância de manhattan para vetores 2D = |x1 - x2| + |y1 - y2|
@@ -83,7 +91,7 @@ class Movimento:
                 distancia = abs(i - l) + abs(j - c)
                 
                 if distancia <= alcance and (i != l or j != c):
-                    if self.tab_matriz[i][j] == 0: # se não for estrutura ou rio, é movimento válido
+                    if self.tab_matrix[i][j] == 0 and self.colisao(i, j, l, c) == True: # se não for estrutura ou rio, é movimento válido
                         movimentos_validos.append((i, j))
         
         return movimentos_validos
