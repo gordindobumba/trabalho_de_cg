@@ -28,6 +28,16 @@ def init():
     glClearColor(0,0,0,1)
     glEnable(GL_DEPTH_TEST)
     glLineWidth(3)
+    
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, 'shaders', 'shaderVertex.glsl'), 'r') as file:
+        vsSource = file.read()
+    with open(os.path.join(here, 'shaders', 'shaderFragment.glsl'), 'r') as file:
+        fsSource = file.read()
+    
+    vsId = gls.compileShader(vsSource, GL_VERTEX_SHADER)
+    fsId = gls.compileShader(fsSource, GL_FRAGMENT_SHADER)
+    shaderId = gls.compileProgram(vsId, fsId)
 
 def render():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -35,7 +45,7 @@ def render():
         
         tabuleiro.render(shaderId, size, ang)
         
-        shader.unbind()
+        glUseProgram(0)
 
 def keyboard(window, key, scancode, action, mods):
     if action == glfw.PRESS:
