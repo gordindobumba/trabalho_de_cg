@@ -71,11 +71,10 @@ class Movimento:
         return posicao_i, posicao_j
     
     def colisao(self, i, j, l, c):
-        if self.tab_matrix[i][j] != 0:
-            if i == l + 1 and j == c: return False
-            elif i == l - 1 and j == c: return False
-            elif i == l and j == c + 1: return False
-            elif i == l and j == c - 1: return False
+        if   i - 1 >= 0 and self.tab_matrix[i - 1][j] != 0 and i - 2 == l and j == c: return False
+        elif  i + 1 < 8 and self.tab_matrix[i + 1][j] != 0 and i + 2 == l and j == c: return False
+        elif j - 1 >= 0 and self.tab_matrix[i][j - 1] != 0 and i == l and j - 2 == c: return False
+        elif  j + 1 < 8 and self.tab_matrix[i][j + 1] != 0 and i == l and j + 2 == c: return False
         return True
     
     # usaremos distância de manhattan para calcular as distâncias possívels a partir da casa selecionada.
