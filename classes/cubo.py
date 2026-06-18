@@ -5,43 +5,60 @@ from classes.shader import *
 
 class Cubo:
     def __init__(self, r, g, b, size=1):
-        vertices = [ # 6 faces = 12 triangulos = 36 vertices
+        vertices = [ # 6 faces = 12 triângulos = 36 vértices
+            # face de baixo, normal = y negativo
             [-size, -size, -size, 0, -1, 0, r, g, b],
+            [ size, -size, -size, 0, -1, 0, r, g, b],
             [-size, -size,  size, 0, -1, 0, r, g, b],
-            [ size, -size, -size, 0, -1, 0, r, g, b], # ABC
+            
             [-size, -size,  size, 0, -1, 0, r, g, b],
             [ size, -size, -size, 0, -1, 0, r, g, b],
-            [ size, -size,  size, 0, -1, 0, r, g, b], # BCD
+            [ size, -size,  size, 0, -1, 0, r, g, b],
+            
+            # face da direita, normal = x positivo
             [ size, -size, -size,  1, 0, 0, r, g, b],
+            [ size,  size, -size,  1, 0, 0, r, g, b],
             [ size, -size,  size,  1, 0, 0, r, g, b],
-            [ size,  size, -size,  1, 0, 0, r, g, b], # CDE
+            
             [ size, -size,  size,  1, 0, 0, r, g, b],
             [ size,  size, -size,  1, 0, 0, r, g, b],
-            [ size,  size,  size,  1, 0, 0, r, g, b], # DEF
-            [ size,  size, -size, 0,  1, 0, r, g, b],
-            [ size,  size,  size, 0,  1, 0, r, g, b],
-            [-size,  size, -size, 0,  1, 0, r, g, b], # EFG
+            [ size,  size,  size,  1, 0, 0, r, g, b],
+            
+            # face de cima, normal = y positivo
+            [-size,  size,  size, 0,  1, 0, r, g, b],
             [ size,  size,  size, 0,  1, 0, r, g, b],
             [-size,  size, -size, 0,  1, 0, r, g, b],
-            [-size,  size,  size, 0,  1, 0, r, g, b], # FGH
-            [-size,  size, -size, -1, 0, 0, r, g, b],
-            [-size,  size,  size, -1, 0, 0, r, g, b],
-            [-size, -size, -size, -1, 0, 0, r, g, b], # AGH
+            
+            [-size,  size, -size, 0,  1, 0, r, g, b],
+            [ size,  size,  size, 0,  1, 0, r, g, b],
+            [ size,  size, -size, 0,  1, 0, r, g, b],
+            
+            # face da esquerda, normal = x negativo
+            [-size, -size,  size, -1, 0, 0, r, g, b],
             [-size,  size,  size, -1, 0, 0, r, g, b],
             [-size, -size, -size, -1, 0, 0, r, g, b],
-            [-size, -size,  size, -1, 0, 0, r, g, b], # BAG
+            
+            [-size, -size, -size, -1, 0, 0, r, g, b],
+            [-size,  size,  size, -1, 0, 0, r, g, b],
+            [-size,  size, -size, -1, 0, 0, r, g, b],
+            
+            # face frontal, normal = z positivo
             [-size, -size,  size, 0, 0,  1, r, g, b],
+            [ size, -size,  size, 0, 0,  1, r, g, b],
             [-size,  size,  size, 0, 0,  1, r, g, b],
-            [ size, -size,  size, 0, 0,  1, r, g, b], # BHD
+            
             [-size,  size,  size, 0, 0,  1, r, g, b],
             [ size, -size,  size, 0, 0,  1, r, g, b],
-            [ size,  size,  size, 0, 0,  1, r, g, b], # HDF
-            [-size, -size, -size, 0, 0, -1, r, g, b],
-            [-size,  size, -size, 0, 0, -1, r, g, b],
-            [ size, -size, -size, 0, 0, -1, r, g, b], # AGC
-            [-size,  size, -size, 0, 0, -1, r, g, b],
+            [ size,  size,  size, 0, 0,  1, r, g, b],
+            
+            # face do fundo, normal = z negativo
             [ size, -size, -size, 0, 0, -1, r, g, b],
-            [ size,  size, -size, 0, 0, -1, r, g, b]  # GCE
+            [-size, -size, -size, 0, 0, -1, r, g, b],
+            [ size,  size, -size, 0, 0, -1, r, g, b],
+            
+            [ size,  size, -size, 0, 0, -1, r, g, b],
+            [-size, -size, -size, 0, 0, -1, r, g, b],
+            [-size,  size, -size, 0, 0, -1, r, g, b]  # GCE
         ]
         
         self.r = r
