@@ -17,7 +17,8 @@ class Movimento:
 
     def calcular_posicao(self, x_pos, y_pos, width, height, ang):
         # ndc = normalized device coordinates (coordenadas de dispositivo nornalizadas)
-        # basicamente vamos converter as coordenadas para que fiquem entre -1.0 e 1.0.
+        # basicamente vamos converter as coordenadas de clique do mouse,
+        # para que fiquem entre -1.0 e 1.0.
         ndc_x = (2.0 * x_pos) / width - 1.0
         ndc_y = 1.0 - (2.0 * y_pos) / height
         
@@ -71,10 +72,10 @@ class Movimento:
         return posicao_i, posicao_j
     
     def colisao(self, i, j, l, c):
-        if   i - 1 >= 0 and self.tab_matrix[i - 1][j] != 0 and i - 2 == l and j == c: return False
-        elif  i + 1 < 8 and self.tab_matrix[i + 1][j] != 0 and i + 2 == l and j == c: return False
-        elif j - 1 >= 0 and self.tab_matrix[i][j - 1] != 0 and i == l and j - 2 == c: return False
-        elif  j + 1 < 8 and self.tab_matrix[i][j + 1] != 0 and i == l and j + 2 == c: return False
+        if   i - 1 >= 0 and self.tab_matrix[i - 1][j] != 0 and (i - 2 == l and j == c): return False
+        elif i + 1 <= 7 and self.tab_matrix[i + 1][j] != 0 and (i + 2 == l and j == c): return False
+        elif j - 1 >= 0 and self.tab_matrix[i][j - 1] != 0 and (i == l and j - 2 == c): return False
+        elif j + 1 <= 7 and self.tab_matrix[i][j + 1] != 0 and (i == l and j + 2 == c): return False
         return True
     
     # usaremos distância de manhattan para calcular as distâncias possívels a partir da casa selecionada.
