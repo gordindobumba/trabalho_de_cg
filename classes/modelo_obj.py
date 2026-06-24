@@ -5,9 +5,10 @@ import os
 import ctypes
 
 class ModeloOBJ:
-    def __init__(self):
+    def __init__(self, nome):
         # carregar obj
         self.vertices = []
+        self.nome = nome
         self.carregar_obj()
         self.vertices = np.array(self.vertices, dtype=np.float32)
 
@@ -52,7 +53,7 @@ class ModeloOBJ:
 
         # abrir arquivo e ler por linha
         path = os.path.dirname(os.path.abspath(__file__))
-        with open(os.path.join(path, '..', 'modelos', 'retangulo.obj'), 'r') as arquivo:
+        with open(os.path.join(path, '..', 'modelos', self.nome), 'r') as arquivo:
             for linha in arquivo:
                 valores = linha.split()
 

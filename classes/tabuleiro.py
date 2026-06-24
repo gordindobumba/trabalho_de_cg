@@ -29,42 +29,42 @@ class Tabuleiro:
         self.personagens = []
 
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 1,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 2,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 3,
             "coluna": 1,
             "tipo": "medico",
             "cor": [0.0, 1.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 4,
             "coluna": 6,
             "tipo": "virus",
             "cor": [1.0, 0.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 5,
             "coluna": 6,
             "tipo": "virus",
             "cor": [1.0, 0.0, 1.0]
         })
         self.personagens.append({
-            "obj": ModeloOBJ(),
+            "obj": ModeloOBJ('retangulo.obj'),
             "linha": 6,
             "coluna": 6,
             "tipo": "virus",
