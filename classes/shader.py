@@ -28,9 +28,9 @@ class Shader:
             loc = glGetUniformLocation(self.shaderId, name)
             self.uniforms[name] = loc
     
-    def setShader(self, name, idx):
+    def setTexture(self, name, idx):
         loc = self.getUniformLocation(name)
-        glUniform1f(loc, idx)
+        glUniform1i(loc, idx)
     
     def setUniform(self, name, x, y = None, z = None):
         loc = self.getUniformLocation(name)

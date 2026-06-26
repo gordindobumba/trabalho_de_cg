@@ -11,8 +11,8 @@ class Tabuleiro:
         self.cubo2 = cubo2
         self.size = 0.1
         
-        self.rio = Cubo(0, 0, 235/255, self.size)
-        self.predio = Cubo(0.1, 0.1, 0.1, self.size)
+        self.rio = Cubo(0, 0, 235/255, self.size, 1)
+        self.predio = Cubo(0.1, 0.1, 0.1, self.size, 2)
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -72,13 +72,13 @@ class Tabuleiro:
         })
 
         self.personagem_selecionado = 0
-        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1)
+        self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1, 2)
 
         self.turno = "medico"
         
         self.modo_movimentar = False
         self.movimentos_validos = []
-        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1)
+        self.cubo_alcance = Cubo(1, 1, 0.0, 0.1, 2)
     
     def render(self, shader, size, ang):
         shader.setUniformLocation('modelMatrix')

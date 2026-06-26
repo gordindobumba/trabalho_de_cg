@@ -4,11 +4,13 @@
 // uniform vec3 camPos;
 // uniform vec3 lightColor;
 // uniform int isShaded;
-in vec2 TextCoord;
+in vec2 textCoord;
 
 uniform sampler2D texturaCor;
 uniform sampler2D texturaNormal;
 uniform sampler2D texturaRugosa;
+
+uniform int ativarTextura;
 
 in vec3 cor;
 in vec3 normal;
@@ -37,6 +39,11 @@ void main(){
     // if(isShaded == 1) c = lightning();
     // else c = cor;
     // fragColor = vec4(dif * c, 1.0);
-
-    fragColor = vec4(cor, 1.0);
+    if(ativarTextura == 1){
+        vec4 corTextura = texture(texturaCor, textCoord);
+        vec4 corFinal = vec4(cor, 1.0) * corTextura;
+        fragColor = corFinal;
+    }else{
+        fragColor = vec4(cor, 1.0);
+    }
 }

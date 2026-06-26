@@ -3,9 +3,9 @@ from OpenGL.GL import *
 import os
 
 class Textura:
-    def __init__(self, fileName):
+    def __init__(self, fileFolder, fileName):
         path = os.path.dirname(os.path.abspath(__file__))
-        filePath = os.path.abspath(os.path.join(path, '..', 'texturas', fileName))
+        filePath = os.path.abspath(os.path.join(path, '..', 'texturas', fileFolder, fileName))
         img = Image.open(filePath)
         img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
         imgData = img.convert('RGBA').tobytes()
@@ -25,3 +25,7 @@ class Textura:
                      imgData)
         glGenerateMipmap(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, 0)
+    
+    def bind(self, texNumber = 0):
+        glActiveTexture(GL_TEXTURE0 + texNumber)
+        glBindTexture(GL_TEXTURE_2D, self.texId)

@@ -20,5 +20,6 @@ void main(){
     pos = vec3(modelMatrix * vec4(a_pos, 1.0));
     normal = mat3(normalMatrix) * a_normal;
     cor = objectColor;
+    textCoord = a_textura;
     gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(a_pos, 1);
 }

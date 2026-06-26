@@ -115,6 +115,9 @@ class ModeloOBJ:
         # enviar cor
         shader.setUniform('objectColor', cor[0], cor[1], cor[2])
         
+        # por enquanto, não desenharemos textura no obj
+        shader.setTexture('ativarTextura', 0)
+        
         # ativar vao
         glBindVertexArray(self.vao)
 
