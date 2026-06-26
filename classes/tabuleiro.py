@@ -11,7 +11,7 @@ class Tabuleiro:
         self.cubo2 = cubo2
         self.size = 0.1
         
-        self.rio = Cubo(0, 0, 235/255, self.size, 1)
+        self.rio = Cubo(0.9, 0.9, 0.9, self.size, 1)
         self.predio = Cubo(0.1, 0.1, 0.1, self.size, 2)
         
         self.tab_matrix = np.zeros((8, 8))

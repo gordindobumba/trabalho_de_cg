@@ -16,11 +16,42 @@ class Movimento:
     # logo, podemos usar esses raios para detectar a posição do clique.
 
     def calcular_posicao(self, x_pos, y_pos, width, height, ang):
+        
+        # antes de calcular a posição, iremos "encaixar" o espaço de clique.
+        # isso porque a classe aqui não sabe da função window_resize,
+        # e acha que o tabuleiro está esticado ou achatado ao alterar o tamanho da janela.
+        # logo, vamos recriar a função window_resize aqui na classe, para corrigir esse problema.
+        window_size = 800
+        if width < 800:
+            x = 0
+            y = (height - window_size)//2
+            w = width
+            h = window_size
+            # equivale a glViewport(0, y, width, window_size).
+        elif height < 800:
+            x = (width - window_size)//2
+            y = 0
+            w = window_size
+            h = height
+            # equivale a glViewport(x, 0, window_size, height).
+        else:
+            size = min(width, height)
+            x = (width - size)//2
+            y = (height - size)//2
+            w = size
+            h = size
+            # equivale a glViewport(x, y, size, size).
+        
+        # se removermos as áreas ajustadas, podemos tratar os cliques
+        # como se a janela estivesse no tamanho original.
+        x_pos_ajust = x_pos - x
+        y_pos_ajust = y_pos - y
+        
         # ndc = normalized device coordinates (coordenadas de dispositivo nornalizadas)
         # basicamente vamos converter as coordenadas de clique do mouse,
         # para que fiquem entre -1.0 e 1.0.
-        ndc_x = (2.0 * x_pos) / width - 1.0
-        ndc_y = 1.0 - (2.0 * y_pos) / height
+        ndc_x = (2.0 * x_pos_ajust) / w - 1.0
+        ndc_y = 1.0 - (2.0 * y_pos_ajust) / h
         
         V = glm.lookAt(glm.vec3(0.0, 0.0, 1.0),
                        glm.vec3(0.0, 0.0, 0.0),
