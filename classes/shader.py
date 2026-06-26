@@ -28,12 +28,20 @@ class Shader:
             loc = glGetUniformLocation(self.shaderId, name)
             self.uniforms[name] = loc
     
-    def setUniform(self, name, x, y, z):
+    def setShader(self, name, idx):
         loc = self.getUniformLocation(name)
-        glUniform3f(loc, x, y, z)
+        glUniform1f(loc, idx)
     
-    def getUniformLocation(self, name):
-        loc = None
+    def setUniform(self, name, x, y = None, z = None):
+        loc = self.getUniformLocation(name)
+        if y == None and z == None:
+            glUniform1f(loc, x)
+        elif z == None:
+            glUniform2f(loc, x, y)
+        else:
+            glUniform3f(loc, x, y, z)
+    
+    def getUniformLocation(self, name, idx = None):
         if name in self.uniforms:
             loc = self.uniforms[name]
         else:
