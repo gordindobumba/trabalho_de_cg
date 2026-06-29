@@ -9,12 +9,11 @@ cubo2 = None
 tabuleiro = None
 shader = None
 size = 0
-shaderId = 0
 ang = 45
 window_size = 800
 
 def init():
-    global cubo1, cubo2,  tabuleiro, shader, shaderId, size
+    global cubo1, cubo2,  tabuleiro, shader, size
 
     size = 0.1
     shader = Shader()

@@ -4,6 +4,7 @@ from classes.cubo import *
 from classes.modelo_obj import *
 from classes.movimento import *
 from classes.luz import *
+from classes.animacao import *
 import numpy as np
 
 class Tabuleiro:
@@ -35,43 +36,58 @@ class Tabuleiro:
             "linha": 1,
             "coluna": 1,
             "tipo": "medico",
-            "cor": [0.0, 1.0, 1.0]
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
         })
+        self.tab_matrix[1][1] = 3
         self.personagens.append({
             "obj": ModeloOBJ('retangulo.obj'),
             "linha": 2,
             "coluna": 1,
             "tipo": "medico",
-            "cor": [0.0, 1.0, 1.0]
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
         })
+        self.tab_matrix[2][1] = 3
         self.personagens.append({
             "obj": ModeloOBJ('retangulo.obj'),
             "linha": 3,
             "coluna": 1,
             "tipo": "medico",
-            "cor": [0.0, 1.0, 1.0]
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
         })
+        self.tab_matrix[3][1] = 3
         self.personagens.append({
             "obj": ModeloOBJ('retangulo.obj'),
             "linha": 4,
             "coluna": 6,
             "tipo": "virus",
-            "cor": [1.0, 0.0, 1.0]
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
         })
+        self.tab_matrix[4][6] = 4
         self.personagens.append({
             "obj": ModeloOBJ('retangulo.obj'),
             "linha": 5,
             "coluna": 6,
             "tipo": "virus",
-            "cor": [1.0, 0.0, 1.0]
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
         })
+        self.tab_matrix[5][6] = 4
         self.personagens.append({
             "obj": ModeloOBJ('retangulo.obj'),
             "linha": 6,
             "coluna": 6,
             "tipo": "virus",
-            "cor": [1.0, 0.0, 1.0]
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
         })
+        self.tab_matrix[6][6] = 4
 
         self.personagem_selecionado = 0
         self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1, 2)
@@ -145,11 +161,15 @@ class Tabuleiro:
 
         # colocar personagens 
         for personagem in self.personagens:
-            linha = personagem["linha"]
-            coluna = personagem["coluna"]
-
-            x = (linha * size * 2) - (0.8 - size)
-            y = (coluna * size * 2) - (0.8 - size)
+            if "animacao" not in personagem: personagem["animacao"] = Animacao()
+            animacao = personagem["animacao"]
+            
+            if animacao.animando == True:
+                animacao.animar()
+                x = animacao.atual[0]
+                y = animacao.atual[1]
+            else:
+                x, y = self.movimento.coordenadas_float(personagem["linha"], personagem["coluna"])
                 
             personagem["obj"].render(shader,
                                glm.vec3(x, y, 0.08),
@@ -202,8 +222,15 @@ class Tabuleiro:
             else:
                 # verifica se a casa selecionada é válida
                 if (clicado_i, clicado_j) in self.movimentos_validos:
+                    
+                    x1, y1 = self.movimento.coordenadas_float(personagem["linha"], personagem["coluna"])
+                    x2, y2 = self.movimento.coordenadas_float(clicado_i, clicado_j)
+                    personagem["animacao"].iniciar(x1, y1, x2, y2)
+                    
+                    self.tab_matrix[personagem["linha"]][personagem["coluna"]] = 0
                     personagem["linha"] = clicado_i
                     personagem["coluna"] = clicado_j
+                    self.tab_matrix[clicado_i, clicado_j] = personagem["id"]
                     self.passar_turno()
 
                 self.modo_movimentar = False

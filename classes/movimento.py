@@ -126,3 +126,10 @@ class Movimento:
                         movimentos_validos.append((i, j))
         
         return movimentos_validos
+
+    # essa função é pra encontrar as posições da matriz do tabuleiro no mundo 3D,
+    # que pode ser usado para coisas como animação.
+    def coordenadas_float(self, l, c):
+        x = (l * self.size * 2) - (0.8 - self.size)
+        y = (c * self.size * 2) - (0.8 - self.size)
+        return x, y
