@@ -14,7 +14,7 @@ class Tabuleiro:
         
         self.rio = Cubo(0.9, 0.9, 0.9, self.size, 1)
         self.predio = Cubo(0.1, 0.1, 0.1, self.size, 2)
-        self.luz = Luz([-0.6, 0.7, 1.0], [0.0, 0.0, 1.0])
+        self.luz = Luz([-0.8, 0.8, 0.1], [0.0, 0.0, 1.0])
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1

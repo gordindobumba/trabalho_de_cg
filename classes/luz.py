@@ -22,4 +22,6 @@ class Luz:
         N = glm.transpose(glm.inverse(M))
         shader.setUniformMatrix('modelMatrix', M)
         shader.setUniformMatrix('normalMatrix', N)
+        shader.setTexture('isLight', 1)
         self.light.render(shader)
+        shader.setTexture('isLight', 0)
