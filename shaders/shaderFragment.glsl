@@ -1,9 +1,8 @@
 #version 460
 
-// uniform vec3 lightPos;
-// uniform vec3 camPos;
-// uniform vec3 lightColor;
-// uniform int isShaded;
+uniform vec3 lightPos;
+uniform vec3 camPos;
+uniform vec3 lightColor;
 in vec2 textCoord;
 
 uniform sampler2D texturaCor;
@@ -18,32 +17,29 @@ in vec3 pos;
 
 out vec4 fragColor;
 
-//vec3 lightning(){
-    // vec3 l = normalize(lightPos - pos);
-    // vec3 n = normalize(normal);
-    // float dif = max(0, dot(l, n));
+vec3 lightning(){
+    vec3 l = normalize(lightPos - pos);
+    vec3 n = normalize(normal);
+    float dif = max(0.0, dot(l, n));
 
-    // vec3 v = normalize(camPos - pos);
-    // vec3 h = normalize(l + v);
-    // float spec = pow(max(0, dot(h, n)), 64);
+    vec3 v = normalize(camPos - pos);
+    vec3 h = normalize(l + v);
+    float spec = pow(max(0.0, dot(h, n)), 32);
 
-    // vec3 amb = 0.1 * cor * lightColor;
+    vec3 amb = 0.4 * cor * lightColor;
 
-    // vec3 shading = amb + lightColor * cor * dif + lightColor * vec3(1, 1, 1) * spec;
+    vec3 shading = amb + lightColor * cor * dif + lightColor * vec3(1, 1, 1) * spec;
 
-    // return shading
-//}
+    return shading;
+}
 
 void main(){
-    // vec3 c
-    // if(isShaded == 1) c = lightning();
-    // else c = cor;
-    // fragColor = vec4(dif * c, 1.0);
+    vec3 c = lightning();
     if(ativarTextura == 1){
         vec4 corTextura = texture(texturaCor, textCoord);
-        vec4 corFinal = vec4(cor, 1.0) * corTextura;
+        vec4 corFinal = vec4(cor, 1.0) * corTextura * vec4(c, 1.0);
         fragColor = corFinal;
     }else{
-        fragColor = vec4(cor, 1.0);
+        fragColor = vec4(c * cor, 1.0);
     }
 }

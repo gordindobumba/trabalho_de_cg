@@ -3,6 +3,7 @@ from pyglm import glm
 from classes.cubo import *
 from classes.modelo_obj import *
 from classes.movimento import *
+from classes.luz import *
 import numpy as np
 
 class Tabuleiro:
@@ -13,6 +14,7 @@ class Tabuleiro:
         
         self.rio = Cubo(0.9, 0.9, 0.9, self.size, 1)
         self.predio = Cubo(0.1, 0.1, 0.1, self.size, 2)
+        self.luz = Luz([-0.6, 0.7, 1.0], [0.0, 0.0, 1.0])
         
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
@@ -84,6 +86,7 @@ class Tabuleiro:
         shader.setUniformLocation('modelMatrix')
         shader.setUniformLocation('viewMatrix')
         shader.setUniformLocation('projMatrix')
+        shader.setUniformLocation('normalMatrix')
         
         V = glm.lookAt(glm.vec3(0.0, 0.0, 1.0),
                        glm.vec3(0.0, 0.0, 0.0),
@@ -115,7 +118,9 @@ class Tabuleiro:
                     T = glm.translate(glm.vec3(x_axis, y_axis, 0))
                     X = T
                 M = R * X
+                N = glm.transpose(glm.inverse(M))
                 shader.setUniformMatrix('modelMatrix', M)
+                shader.setUniformMatrix('normalMatrix', N)
                 
                 if self.tab_matrix[i][j] == 1: 
                     self.rio.render(shader)
@@ -135,6 +140,8 @@ class Tabuleiro:
                             M = R * (T * S)
                             shader.setUniformMatrix('modelMatrix', M)
                             self.predio.render(shader)
+        
+        self.luz.render(shader)
 
         # colocar personagens 
         for personagem in self.personagens:

@@ -59,7 +59,7 @@ class Cubo:
             
             [ size,  size, -size, 0, 0, -1, r, g, b, 0, 1],
             [-size, -size, -size, 0, 0, -1, r, g, b, 1, 0],
-            [-size,  size, -size, 0, 0, -1, r, g, b, 1, 1]  # GCE
+            [-size,  size, -size, 0, 0, -1, r, g, b, 1, 1]
         ]
         
         self.cores = [r, g, b]
