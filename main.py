@@ -32,7 +32,12 @@ def render():
         shader.bind()
         
         tabuleiro.render(shader, size, ang)
-        
+        if tabuleiro.estado == "vitoria":
+            glClearColor(0, 0.9, 0, 1)
+        elif tabuleiro.estado == "derrota":
+            glClearColor(0.9, 0, 0, 1)
+        else:
+            glClearColor(0, 0, 0, 1)
         shader.unbind()
 
 def keyboard(window, key, scancode, action, mods):
@@ -52,6 +57,9 @@ def process_input(window):
         ang += 1
     if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
         ang -= 1
+    if glfw.get_key(window, glfw.KEY_R) == glfw.PRESS:
+        if tabuleiro.estado != "jogando":
+            tabuleiro.reiniciar()
 
 def window_resize(window, width, height):
     if width < window_size:

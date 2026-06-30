@@ -18,6 +18,7 @@ class Tabuleiro:
         self.predio = Cubo(0.1, 0.1, 0.1, self.size, 2)
         self.luz = Luz([-0.8, 0.8, 0.1], [0.0, 0.0, 1.0])
         
+        # Inicializando um tabuleiro fixo
         self.tab_matrix = np.zeros((8, 8))
         self.tab_matrix[7][7] = 1
         self.tab_matrix[7][6] = 1
@@ -101,6 +102,8 @@ class Tabuleiro:
         self.ataques_validos = []
         self.cubo_alcance = Cubo(1, 1, 0.0, 0.1, 2)
         self.cubo_ataque = Cubo(1, 0, 0, 0.1, 2)
+        
+        self.estado = "jogando"
     
     def render(self, shader, size, ang):
         shader.setUniformLocation('modelMatrix')
@@ -192,6 +195,7 @@ class Tabuleiro:
 
     def mudar_posicao_personagem(self, x_pos, y_pos, width, height, ang):
         clicado_i, clicado_j = self.movimento.calcular_posicao(x_pos, y_pos, width, height, ang)
+        if self.estado != "jogando": return
         
         if 0 <= clicado_i < 8 and 0 <= clicado_j < 8:
             personagem = self.personagens[self.personagem_selecionado]
@@ -223,7 +227,9 @@ class Tabuleiro:
                 # verifica se a casa selecionada é de ataque
                 if (clicado_i, clicado_j) in self.ataques_validos:
                     self.combate.atacar(personagem, clicado_i, clicado_j, self.movimento)
-                    self.passar_turno()
+                    self.verificar_estado()
+                    if self.estado == "jogando":
+                        self.passar_turno()
                 
                 # verifica se a casa selecionada é de movimento
                 elif (clicado_i, clicado_j) in self.movimentos_validos:
@@ -263,3 +269,106 @@ class Tabuleiro:
             if p["tipo"] == self.turno:
                 self.personagem_selecionado = i
                 break
+    
+    def verificar_estado(self):
+        tem_virus = any(p["tipo"] == "virus" for p in self.personagens)
+        
+        if tem_virus == False:
+            print("Os vírus foram derrotados. Você venceu.")
+            print("Aperte R para reiniciar.")
+            self.estado = "vitoria"
+            return
+        
+        if len(self.combate.vida_torres) == 0:
+            print("Os vírus destruíram os hospitais. Você perdeu.")
+            print("Aperte R para reiniciar.")
+            self.estado = "derrota"
+            return
+    
+    def reiniciar(self):
+        print("Reiniciando...")
+        
+        self.tab_matrix = np.zeros((8, 8))
+        self.tab_matrix[7][7] = 1
+        self.tab_matrix[7][6] = 1
+        self.tab_matrix[7][5] = 1
+        self.tab_matrix[6][7] = 1
+        self.tab_matrix[5][1] = 1
+        self.tab_matrix[5][2] = 1
+        self.tab_matrix[6][2] = 2
+        self.tab_matrix[2][3] = 2
+
+        self.movimento.tab_matrix = self.tab_matrix
+        self.personagens = []
+
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 1,
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
+        })
+        self.tab_matrix[1][1] = 3
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 2,
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
+        })
+        self.tab_matrix[2][1] = 3
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 3,
+            "coluna": 1,
+            "tipo": "medico",
+            "cor": [0.0, 1.0, 1.0],
+            "id": 3
+        })
+        self.tab_matrix[3][1] = 3
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 4,
+            "coluna": 6,
+            "tipo": "virus",
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
+        })
+        self.tab_matrix[4][6] = 4
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 5,
+            "coluna": 6,
+            "tipo": "virus",
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
+        })
+        self.tab_matrix[5][6] = 4
+        self.personagens.append({
+            "obj": ModeloOBJ('retangulo.obj'),
+            "linha": 6,
+            "coluna": 6,
+            "tipo": "virus",
+            "vida": 3,
+            "cor": [1.0, 0.0, 1.0],
+            "id": 4
+        })
+        self.tab_matrix[6][6] = 4
+        
+        self.combate.personagens = self.personagens
+        self.combate.matrix = self.tab_matrix
+        self.combate.vida_torres.clear()
+        self.combate.iniciar_torres()
+
+        self.personagem_selecionado = 0
+        self.turno = "medico"
+        
+        self.modo_movimentar = False
+        self.movimentos_validos = []
+        self.ataques_validos = []
+        
+        self.estado = "jogando"
