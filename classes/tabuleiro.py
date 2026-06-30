@@ -28,6 +28,7 @@ class Tabuleiro:
         self.tab_matrix[5][2] = 1
         self.tab_matrix[6][2] = 2
         self.tab_matrix[2][3] = 2
+        self.tab_matrix[1][6] = 2
         
         self.movimento = Movimento(self.size, self.tab_matrix)
 
@@ -274,14 +275,10 @@ class Tabuleiro:
         tem_virus = any(p["tipo"] == "virus" for p in self.personagens)
         
         if tem_virus == False:
-            print("Os vírus foram derrotados. Você venceu.")
-            print("Aperte R para reiniciar.")
             self.estado = "vitoria"
             return
         
         if len(self.combate.vida_torres) == 0:
-            print("Os vírus destruíram os hospitais. Você perdeu.")
-            print("Aperte R para reiniciar.")
             self.estado = "derrota"
             return
     

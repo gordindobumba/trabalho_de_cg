@@ -10,6 +10,7 @@ tabuleiro = None
 shader = None
 size = 0
 ang = 45
+window_title = "Pandemic Wars - Ativo"
 window_size = 800
 
 def init():
@@ -28,16 +29,20 @@ def init():
     glLineWidth(3)
 
 def render():
+        global window_title
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         shader.bind()
         
         tabuleiro.render(shader, size, ang)
         if tabuleiro.estado == "vitoria":
-            glClearColor(0, 0.9, 0, 1)
+            glClearColor(0, 0.8, 0, 1)
+            window_title = "Pandemic Wars - Vitória (Aperte R para Recomeçar)"
         elif tabuleiro.estado == "derrota":
-            glClearColor(0.9, 0, 0, 1)
+            glClearColor(0.8, 0, 0, 1)
+            window_title = "Pandemic Wars - Derrota (Aperte R para Recomeçar)"
         else:
             glClearColor(0, 0, 0, 1)
+            window_title = "Pandemic Wars - Ativo"
         shader.unbind()
 
 def keyboard(window, key, scancode, action, mods):
@@ -79,7 +84,7 @@ def main():
     glfw.init()
     width, height = 800, 800
 
-    window = glfw.create_window(width, height, 'trabalho de CG', None, None)
+    window = glfw.create_window(width, height, window_title, None, None)
     glfw.make_context_current(window)
     glfw.set_window_size_callback(window, window_resize)
     glfw.set_key_callback(window, keyboard)
@@ -104,6 +109,7 @@ def main():
             tempo_acumulado -= intervalo_input
             
         render()
+        glfw.set_window_title(window, window_title)
         glfw.swap_buffers(window)
     glfw.terminate()
 
