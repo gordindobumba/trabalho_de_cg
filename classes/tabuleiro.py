@@ -5,6 +5,7 @@ from classes.modelo_obj import *
 from classes.movimento import *
 from classes.luz import *
 from classes.animacao import *
+from classes.combate import *
 import numpy as np
 
 class Tabuleiro:
@@ -88,15 +89,18 @@ class Tabuleiro:
             "id": 4
         })
         self.tab_matrix[6][6] = 4
+        
+        self.combate = Combate(self.personagens, self.tab_matrix)
 
         self.personagem_selecionado = 0
         self.cubo_selecionado = Cubo(0.0 , 1.0, 0.0, 0.1, 2)
-
         self.turno = "medico"
         
         self.modo_movimentar = False
         self.movimentos_validos = []
+        self.ataques_validos = []
         self.cubo_alcance = Cubo(1, 1, 0.0, 0.1, 2)
+        self.cubo_ataque = Cubo(1, 0, 0, 0.1, 2)
     
     def render(self, shader, size, ang):
         shader.setUniformLocation('modelMatrix')
@@ -143,6 +147,8 @@ class Tabuleiro:
                 else:
                     if i == linha_selecionada and j == coluna_selecionada:
                         self.cubo_selecionado.render(shader)
+                    elif self.modo_movimentar and (i, j) in self.ataques_validos:
+                        self.cubo_ataque.render(shader)
                     elif self.modo_movimentar and (i, j) in self.movimentos_validos:
                         self.cubo_alcance.render(shader)
                     else:
@@ -150,12 +156,13 @@ class Tabuleiro:
                             self.cubo1.render(shader)
                         else: 
                             self.cubo2.render(shader)
-                        if self.tab_matrix[i][j] == 2:
-                            S = glm.scale(glm.vec3(0.4, 0.4, 2.0))
-                            T = glm.translate(glm.vec3(x_axis, y_axis, 0.15))
-                            M = R * (T * S)
-                            shader.setUniformMatrix('modelMatrix', M)
-                            self.predio.render(shader)
+                    
+                    if self.tab_matrix[i][j] == 2:
+                        S = glm.scale(glm.vec3(0.4, 0.4, 2.0))
+                        T = glm.translate(glm.vec3(x_axis, y_axis, 0.15))
+                        M = R * (T * S)
+                        shader.setUniformMatrix('modelMatrix', M)
+                        self.predio.render(shader)
         
         self.luz.render(shader)
 
@@ -190,39 +197,36 @@ class Tabuleiro:
             personagem = self.personagens[self.personagem_selecionado]
             
             if not self.modo_movimentar:
-                
+                alvo_selecionado = None
                 # se clicou no mesmo personagem, mostra as casas válidas
                 if clicado_i == personagem["linha"] and clicado_j == personagem["coluna"]:
-                    if personagem["tipo"] != self.turno:
-                        return
-                    self.modo_movimentar = True 
-                    movimentos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
-                    self.movimentos_validos = []
-                    for casa in movimentos:
-                        i, j = casa
-                        if not self.casa_ocupada(i, j, personagem):
-                            self.movimentos_validos.append(casa)
+                    if personagem["tipo"] == self.turno:
+                        alvo_selecionado = personagem
                 
                 # se não clicou no mesmo personagem, checa se clicou no outro personagem
                 else:   
                     for id, p in enumerate(self.personagens):
                         if p["linha"] == clicado_i and p["coluna"] == clicado_j:
-                            if p["tipo"] != self.turno:
-                                return
-                            self.personagem_selecionado = id
-                            personagem = p
-                            self.modo_movimentar = True
-                            movimentos = self.movimento.opcoes_movimento(clicado_i, clicado_j)
-                            self.movimentos_validos = []
-                            for casa in movimentos:
-                                i, j = casa
-                                if not self.casa_ocupada(i, j, personagem):
-                                    self.movimentos_validos.append(casa)
+                            if p["tipo"] == self.turno:
+                                self.personagem_selecionado = id
+                                alvo_selecionado = p
                             break
+                
+                if alvo_selecionado != None:
+                    self.modo_movimentar = True
+                    movimento = self.movimento.opcoes_movimento(clicado_i, clicado_j)
+                    for casa in movimento:
+                        if not self.casa_ocupada(casa[0], casa[1], alvo_selecionado):
+                            self.movimentos_validos.append(casa)
+                    self.ataques_validos = self.combate.opcoes_ataque(clicado_i, clicado_j, alvo_selecionado["tipo"])
             else:
-                # verifica se a casa selecionada é válida
-                if (clicado_i, clicado_j) in self.movimentos_validos:
-                    
+                # verifica se a casa selecionada é de ataque
+                if (clicado_i, clicado_j) in self.ataques_validos:
+                    self.combate.atacar(personagem, clicado_i, clicado_j, self.movimento)
+                    self.passar_turno()
+                
+                # verifica se a casa selecionada é de movimento
+                elif (clicado_i, clicado_j) in self.movimentos_validos:
                     x1, y1 = self.movimento.coordenadas_float(personagem["linha"], personagem["coluna"])
                     x2, y2 = self.movimento.coordenadas_float(clicado_i, clicado_j)
                     personagem["animacao"].iniciar(x1, y1, x2, y2)
@@ -235,6 +239,7 @@ class Tabuleiro:
 
                 self.modo_movimentar = False
                 self.movimentos_validos = []
+                self.ataques_validos = []
 
     # verificar se a casa já é ocupada por outro personagem
     def casa_ocupada(self, linha, coluna, ignorar=None):
@@ -248,7 +253,8 @@ class Tabuleiro:
     # passar para o próximo turno
     def passar_turno(self):
         self.modo_movimentar = False
-        self.movimentos_validos = []    
+        self.movimentos_validos = []
+        self.ataques_validos = []
         if self.turno == "medico":
             self.turno = "virus"
         else:
